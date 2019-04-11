@@ -9,7 +9,9 @@ This repository is currently empty, but a migration effort will begin soon to mo
 Currently the repo only have a simple Levenshtein aligner checked in. See `lev.py` for details.
 
 ## Next steps
-Working on reintegrating the phonetic alignment breakdown
+* Working on reintegrating the phonetic alignment breakdown
+* Reintegrate Festival (http://www.cstr.ed.ac.uk/projects/festival/)
+* Alternative implementations with CMUDict (http://www.speech.cs.cmu.edu/cgi-bin/cmudict) and Hunspell for syllabification (e.g. https://pyphen.org/) instead of Festival
 
 ## Papers
 
