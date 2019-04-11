@@ -17,7 +17,6 @@ Working on reintegrating the phonetic alignment breakdown
 When referencing power-asr, please cite [this paper](https://ieeexplore.ieee.org/document/7404808).
 
 ```
-@article{power-asr,
 @inproceedings{power-asr, 
     author={Nicholas Ruiz and Marcello Federico}, 
     booktitle={{2015 IEEE Workshop on Automatic Speech Recognition and Understanding (ASRU)}}, 
