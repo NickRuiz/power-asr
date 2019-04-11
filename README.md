@@ -1,7 +1,6 @@
-# power-asr
-Phonetically-Oriented Word Error Rate
+# Phonetically-Oriented Word Error Rate aligner (power-align)
 
-Levenshtein-based word alignment and word error rate that accounts for acoustic confusability.
+Levenshtein-based word alignment and word error rate for ASR that accounts for acoustic confusability.
 
 ## Status
 This repository is currently empty, but a migration effort will begin soon to move the codebase from a private repository here for the community to benefit. I'm working on an iterative roll-out because of some dependency breaks since I built this back in 2015. Thanks for your patience!
