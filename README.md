@@ -31,9 +31,10 @@ Counter({'S': 13, 'C': 0, 'L': 0, 'I': -6, 'D': -7})
 There are currently a few imperfections due to not using a proper grapheme to phoneme transducer like in Festival. If you see any alignment issues, please open up an Issue.
 
 ## Next steps
-* Working on reintegrating the phonetic alignment breakdown
-* Reintegrate Festival (http://www.cstr.ed.ac.uk/projects/festival/)
 * Alternative implementations with CMUDict (http://www.speech.cs.cmu.edu/cgi-bin/cmudict) and Hunspell for syllabification (e.g. https://pyphen.org/) instead of Festival (partially complete)
+* Reintroduce punctuation splitting and tokenization
+* Reintegrate Festival (http://www.cstr.ed.ac.uk/projects/festival/)
+* Reintegrate oracle punctuation insertion (i.e. Reference contains punctuation, insert the same punctuation symbols on the hypothesis)
 
 ## Papers
 
