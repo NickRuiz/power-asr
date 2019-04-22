@@ -28,6 +28,26 @@ Score component difference (POWER vs WER):
 Diff:  0.0
 Counter({'S': 13, 'C': 0, 'L': 0, 'I': -6, 'D': -7})
 ```
+
+Excerpt from results.power.snt:
+```
+Scores (#C #S #D #I) 7 8 0 1
+REF:  you     know  cadaver  dissection       is    the  traditional  way  of  learning  human  anatomy       
+HYP:  seeing  a     cadaver  dissection  and  ease  the  traditional  way  of  loaning   human  and that to me
+Eval: S       S     C        C           I    S     C    C            C    C   S         C      S             
+
+Correct               =  58.3%   7   (12)
+Substitutions         =  66.7%   8   (12)
+Deletions             =  0.0%   0   (12)
+Insertions            =  8.3%   1   (12)
+
+Errors                =  75.0%   9   (12)
+
+Ref. words            =         12   (12)
+Hyp. words            =         16   (12)
+Aligned words         =         15   (12)
+```
+
 There are currently a few imperfections due to not using a proper grapheme to phoneme transducer like in Festival. If you see any alignment issues, please open up an Issue.
 
 ## Next steps
