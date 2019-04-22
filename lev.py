@@ -1,6 +1,5 @@
 import sys
 import argparse
-from itertools import izip
 from lib.power import Levenshtein, ExpandedAlignment
 
 
@@ -13,7 +12,7 @@ def main(argv):
 	args = parser.parse_args(argv)
 
 	with open(args.ref, 'r') as fref, open(args.hyp, 'r') as fhyp:
-		for ref, hyp in izip(fref, fhyp):
+		for ref, hyp in zip(fref, fhyp):
 			ref = [x for x in ref.strip().split(' ') if x]
 			hyp = [x for x in hyp.strip().split(' ') if x]
 			

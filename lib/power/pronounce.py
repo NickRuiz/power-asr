@@ -6,17 +6,27 @@ Assuming you have a file of word sequences, this processes them through Festival
 
 '''
 import sys
+import json
 from itertools import groupby
 import pyphen
 
+class PronouncerType:
+    Base = "base"
+    Lexicon = "lexicon"
 
-class PronouncerLex(object):
+class PronouncerBase(object):
+    def __init__(self):
+        pass
+    def pronounce(self, words):
+        raise NotImplementedError
+
+class PronouncerLex(PronouncerBase):
     '''Lexicon-based pronunciation generator. Looks up words in the lexicon and if they aren't found, uses a hacky alternative.
-    TODO: English-only
+    NOTE: English-only
     '''
-
     def __init__(self, lexicon):
-        self.lexicon = lexicon
+        with open(lexicon, 'r') as f:
+            self.lexicon = json.load(f)
         self.fallbackDict = pyphen.Pyphen(lang='en_US')
 
     def pronounce(self, words):
@@ -34,8 +44,11 @@ class PronouncerLex(object):
             n = len(syl)
             sylpron = []
             while m < n:
-                j, p = [(n-i, self.lexicon[syl[m:n-i]])
-                        for i in range(n) if syl[m:n-i] in self.lexicon][0]
+                pronidx = [(n-i, self.lexicon[syl[m:n-i]])
+                        for i in range(n) if syl[m:n-i] in self.lexicon]
+                if not pronidx:
+                    break
+                j, p = pronidx[0]
                 sylpron.append(p)
                 m = j
             # Remove duplicate adjacent phonemes
