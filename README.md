@@ -51,6 +51,7 @@ Aligned words         =         15   (12)
 There are currently a few imperfections due to not using a proper grapheme to phoneme transducer like in Festival. If you see any alignment issues, please open up an Issue.
 
 ## Next steps
+* Reintroduce Substitution Spans (SS) to make the error reporting percentages more "accurate"
 * Alternative implementations with CMUDict (http://www.speech.cs.cmu.edu/cgi-bin/cmudict) and Hunspell for syllabification (e.g. https://pyphen.org/) instead of Festival (partially complete)
 * Reintroduce punctuation splitting and tokenization
 * Reintegrate Festival (http://www.cstr.ed.ac.uk/projects/festival/)
