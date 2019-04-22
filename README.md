@@ -56,6 +56,7 @@ There are currently a few imperfections due to not using a proper grapheme to ph
 * Reintroduce punctuation splitting and tokenization
 * Reintegrate Festival (http://www.cstr.ed.ac.uk/projects/festival/)
 * Reintegrate oracle punctuation insertion (i.e. Reference contains punctuation, insert the same punctuation symbols on the hypothesis)
+* Character alignment option instead of phoneme alignment back-off
 
 ## Papers
 
