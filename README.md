@@ -14,8 +14,21 @@ Currently the repo has:
 
 ## Example
 ```
-python power.py --ref examples/align-words/ref.txt --hyp examples/align-words/hyp.txt --output examples/align-words/results --lexicon lib/lex/cmudict.rep.json
+$ python power.py --ref examples/align-words/ref.txt --hyp examples/align-words/hyp.txt --output examples/align-words/results --lexicon lib/lex/cmudict.rep.json
+
+File written to examples/align-words/results.power.snt
+=============
+Final scores:
+WER:   0.326829268293
+Counter({'L': 205, 'C': 150, 'S': 39, 'D': 16, 'I': 12})
+POWER: 0.326829268293
+Counter({'L': 205, 'C': 150, 'S': 52, 'D': 9, 'I': 6})
+
+Score component difference (POWER vs WER):
+Diff:  0.0
+Counter({'S': 13, 'C': 0, 'L': 0, 'I': -6, 'D': -7})
 ```
+There are currently a few imperfections due to not using a proper grapheme to phoneme transducer like in Festival. If you see any alignment issues, please open up an Issue.
 
 ## Next steps
 * Working on reintegrating the phonetic alignment breakdown
