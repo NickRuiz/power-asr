@@ -48,7 +48,7 @@ Hyp. words            =         16   (12)
 Aligned words         =         15   (12)
 ```
 
-There are currently a few imperfections due to not using a proper grapheme to phoneme transducer like in Festival. If you see any alignment issues, please open up an Issue.
+There are currently a few imperfections due to not using a proper grapheme to phoneme (g2p) transducer like in Festival. If you see any significant alignment issues, please open up an Issue.
 
 ## Next steps
 * Reintroduce Substitution Spans (SS) to make the error reporting percentages more "accurate"
