@@ -16,11 +16,32 @@ Currently the repo has:
 ```
 python power.py --ref examples/align-words/ref.txt --hyp examples/align-words/hyp.txt --output examples/align-words/results --lexicon lex/cmudict.rep.json
 ```
+Scores (#C #S #D #I) 7 8 0 1
+REF:  you     know  cadaver  dissection       is    the  traditional  way  of  learning  human  anatomy       
+HYP:  seeing  a     cadaver  dissection  and  ease  the  traditional  way  of  loaning   human  and that to me
+Eval: S       S     C        C           I    S     C    C            C    C   S         C      S             
+
+Correct               =  58.3%   7   (12)
+Substitutions         =  66.7%   8   (12)
+Deletions             =  0.0%   0   (12)
+Insertions            =  8.3%   1   (12)
+
+Errors                =  75.0%   9   (12)
+
+Ref. words            =         12   (12)
+Hyp. words            =         16   (12)
+Aligned words         =         15   (12)
+```
+
+There are currently a few imperfections due to not using a proper grapheme to phoneme (g2p) transducer like in Festival. If you see any significant alignment issues, please open up an Issue.
 
 ## Next steps
-* Working on reintegrating the phonetic alignment breakdown
-* Reintegrate Festival (http://www.cstr.ed.ac.uk/projects/festival/)
+* Reintroduce Substitution Spans (SS) to make the error reporting percentages more "accurate"
 * Alternative implementations with CMUDict (http://www.speech.cs.cmu.edu/cgi-bin/cmudict) and Hunspell for syllabification (e.g. https://pyphen.org/) instead of Festival (partially complete)
+* Reintroduce punctuation splitting and tokenization
+* Reintegrate Festival (http://www.cstr.ed.ac.uk/projects/festival/)
+* Reintegrate oracle punctuation insertion (i.e. Reference contains punctuation, insert the same punctuation symbols on the hypothesis)
+* Character alignment option instead of phoneme alignment back-off
 
 ## Papers
 
