@@ -1,5 +1,5 @@
-from lib.power.aligner import PowerAligner
-from lib.power.levenshtein import ExpandedAlignment
+from power.aligner import PowerAligner
+from power.levenshtein import ExpandedAlignment
 import unittest
 
 class PowerAlign_test(unittest.TestCase):

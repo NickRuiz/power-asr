@@ -1,6 +1,6 @@
 import sys
 import argparse
-from lib.power import Levenshtein, ExpandedAlignment
+from power import Levenshtein, ExpandedAlignment
 
 
 def main(argv):

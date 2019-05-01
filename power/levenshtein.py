@@ -1,7 +1,6 @@
 from __future__ import division
 import re
 from collections import Counter, defaultdict, deque
-import networkx as nx
 import itertools
 
 
@@ -340,7 +339,7 @@ class Levenshtein:
                 # Get the locally minimum score and edit operation
                 minDist = min(opts)
                 minIndices = [i for i in reversed(
-                    xrange(len(opts))) if opts[i] == minDist]
+                    range(len(opts))) if opts[i] == minDist]
 # 				minDist, minIndex = min((d, i) for i,d in enumerate(opts))
 
                 # Build the backtrack
@@ -386,6 +385,7 @@ class Levenshtein:
         Takes all of the best Levenshtein alignment paths and puts them in a graph.
         The graph is weighted by distance, which computes the distance between minPos and maxPos for all paths.
         """
+        import networkx as nx
         if not minPos:
             minPos = (0, 0)
         if not maxPos:
@@ -429,6 +429,7 @@ class Levenshtein:
         Using the backtracking matrix, finds all of the paths with the minimum Levenshtein distance score and stores them in a graph.
         Then, it returns the expanded alignment of the shortest path in the graph (which still has the same minimum Lev distance score.
         """
+        import networkx as nx
         minPos = (0, 0)
         maxPos = (self.backMatrix.hyplen, self.backMatrix.reflen)
 

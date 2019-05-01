@@ -14,7 +14,7 @@ Currently the repo has:
 
 ## Example
 ```
-python power.py --ref examples/align-words/ref.txt --hyp examples/align-words/hyp.txt --output examples/align-words/results --lexicon lib/lex/cmudict.rep.json
+python power.py --ref examples/align-words/ref.txt --hyp examples/align-words/hyp.txt --output examples/align-words/results --lexicon lex/cmudict.rep.json
 ```
 
 ## Next steps

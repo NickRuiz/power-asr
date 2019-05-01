@@ -4,8 +4,8 @@ import argparse
 import copy
 from collections import defaultdict, Counter
 
-from lib.power import writers
-from lib.power.aligner import PowerAligner
+from power import writers
+from power.aligner import PowerAligner
 
 
 def main(argv):

@@ -1,8 +1,8 @@
 from __future__ import division
 from collections import deque
-from levenshtein import Levenshtein, ExpandedAlignment, AlignLabels
-from phonemes import Phonemes
-from pronounce import PronouncerType, PronouncerBase, PronouncerLex
+from power.levenshtein import Levenshtein, ExpandedAlignment, AlignLabels
+from power.phonemes import Phonemes
+from power.pronounce import PronouncerType, PronouncerBase, PronouncerLex
 
 class TokType:
     WordBoundary = 1
@@ -51,7 +51,7 @@ class CharToWordAligner:
         tmp_ref_word = []
         tmp_hyp_word = []
         
-        for i in xrange(len(self.char_align.align)):
+        for i in range(len(self.char_align.align)):
             ref_char = self.char_align.s1[i]
             hyp_char = self.char_align.s2[i]
             align_char = self.char_align.align[i] 
@@ -385,7 +385,7 @@ class PowerAligner:
                     elif ref_type == TokType.Phoneme and not ref_word_started:
                         ref_word_started = True
                         try:
-                            ref_word_item = ref_word_iter.next()
+                            ref_word_item = ref_word_iter.__next__()
                             ref_word_builder.append(ref_word_item[1])
                         except StopIteration:
                             pass
@@ -425,7 +425,7 @@ class PowerAligner:
                     elif hyp_type == TokType.Phoneme and not hyp_word_started:
                         hyp_word_started = True
                         try:
-                            hyp_word_item = hyp_word_iter.next()
+                            hyp_word_item = hyp_word_iter.__next__()
                             hyp_word_builder.append(hyp_word_item[1])
                         except StopIteration: 
                             pass
