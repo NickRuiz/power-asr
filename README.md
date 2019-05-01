@@ -15,7 +15,7 @@ Currently the repo has:
 ## Example
 ```
 python power.py --ref examples/align-words/ref.txt --hyp examples/align-words/hyp.txt --output examples/align-words/results --lexicon lex/cmudict.rep.json
-```
+
 Scores (#C #S #D #I) 7 8 0 1
 REF:  you     know  cadaver  dissection       is    the  traditional  way  of  learning  human  anatomy       
 HYP:  seeing  a     cadaver  dissection  and  ease  the  traditional  way  of  loaning   human  and that to me
