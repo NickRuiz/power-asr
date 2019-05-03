@@ -6,6 +6,9 @@ from collections import defaultdict
 import itertools
 import string
 
+def splitHyphens(text):
+    return [x for x in re.split('[ -]', text) if x]
+
 class HypothesisNormalizer(object):
     '''
     Normalizes a hypothesis towards a reference.
@@ -14,6 +17,8 @@ class HypothesisNormalizer(object):
     
     @staticmethod
     def normalizeAligned(expand_align, fix_casing=False):
+        # Given a Levenshtein-aligned utterance pair, normalize the aligned hypothesis to look like the reference.
+
         # Pass #1, only fix substitution errors
         for i in range(expand_align.length()):
             if expand_align.align[i] == 'S':
@@ -42,6 +47,7 @@ class HypothesisNormalizer(object):
     
     @staticmethod
     def normalize(hyp, ref):
+        # Normalizes the hypothesis toward the reference (no alignment required).
         hyp_fixed = ' '.join(HypothesisNormalizer.normalizeHyphenated(hyp, ref, removeHyphens=True))
         if hyp_fixed != ref:
             hyp_fixed = ' '.join(HypothesisNormalizer.normalizeHyphenated(hyp_fixed, ref, removeHyphens=False))
@@ -50,8 +56,8 @@ class HypothesisNormalizer(object):
     @staticmethod
     def normalizeHyphenated(hyp, ref, removeHyphens=False):
         if removeHyphens:   
-            refwords = [x for x in re.split('[ -]', ref) if x]
-            hypwords = [x for x in re.split('[ -]', hyp) if x]
+            refwords = splitHyphens(ref)
+            hypwords = splitHyphens(hyp)
         else:
             refwords = ref.split()
             hypwords = hyp.split()
@@ -107,8 +113,6 @@ class HypothesisNormalizer(object):
                     
                     # The first match should be the best match.
                     if not match:
-                        # No matches. 
-                        
                         # If there's a number option, try continuing to see if it can be resolved.
                         # TODO: This could lead to some problems.
                         if 'num' in norm_options:
@@ -117,7 +121,6 @@ class HypothesisNormalizer(object):
                             # Check for a partial match
                             if zero_term_nums and re.search("(^| )({0})".format("|".join(zero_term_nums)), ref_span_str, re.IGNORECASE):
                                 continue
-                        
                         # Abandon the current hyp and move on
                         break
                     
@@ -228,6 +231,7 @@ class HypothesisNormalizer(object):
         
     @staticmethod
     def getNormOptions(word_string, extended=True):
+        # Returns possible ways to normalize the string
         options_dict = defaultdict(set)
         
         # Number conversion

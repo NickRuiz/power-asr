@@ -169,8 +169,13 @@ class PowerAligner:
             ref_phones = self.pronouncer.pronounce(ref_words)
             hyp_phones = self.pronouncer.pronounce(hyp_words)
 
+            print('REF', ref_phones)
+            print('HYP', hyp_phones)
+
             power_seg_alignment, self.phonetic_alignments[error_index] = PowerAligner.phoneAlignToWordAlign(ref_words, hyp_words, 
                 ref_phones, hyp_phones)
+
+            print(self.phonetic_alignments[error_index])
 
             # Replace the error region at the current index.
             self.split_regions[error_index] = power_seg_alignment

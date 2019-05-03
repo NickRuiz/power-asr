@@ -86,10 +86,26 @@ class test_aligner(unittest.TestCase):
         actual = aligner.power_alignment.s2_string().split()
         self.assertEqual(actual, expected)
 
-    def test_power_ISS_to_DS(self):
+    def test_power_SS_to_DS(self):
         # TODO: This test currently fails because of number normalization. Need to reintroduce the number normalizer into the codebase.
         expected_ref =   preproc("A  50-year-old     business  man")
         expected_hyp =   preproc("_  fifty year old  business  man")
+        expected_align = preproc("D  S               C         C")
+
+        aligner = PowerAligner(expected_ref['string'], expected_hyp['string'], lowercase=True, lexicon=self.lex)
+        aligner.align()
+
+        print("WER")
+        print(aligner.wer_alignment)
+        print ("POWER")
+        print(aligner.power_alignment)
+
+        self.assertEqual(expected_align['alignment'], aligner.power_alignment.align)
+
+    def test_power_SS_to_DS_digit(self):
+        # TODO: This test currently fails because of number normalization. Need to reintroduce the number normalizer into the codebase.
+        expected_ref =   preproc("A  fifty-year-old  business  man")
+        expected_hyp =   preproc("_  50 year old     business  man")
         expected_align = preproc("D  S               C         C")
 
         aligner = PowerAligner(expected_ref['string'], expected_hyp['string'], lowercase=True, lexicon=self.lex)

@@ -8,6 +8,7 @@ Assuming you have a file of word sequences, this processes them through Festival
 import sys
 import json
 from itertools import groupby
+from normalize import NumToTextEng, splitHyphens
 import pyphen
 
 class PronouncerType:
@@ -18,6 +19,7 @@ class PronouncerBase(object):
     def __init__(self):
         pass
     def pronounce(self, words):
+        '''G2P conversion'''
         raise NotImplementedError
 
 class PronouncerLex(PronouncerBase):
@@ -30,10 +32,29 @@ class PronouncerLex(PronouncerBase):
         self.fallbackDict = pyphen.Pyphen(lang='en_US')
 
     def pronounce(self, words):
+        '''G2P using Pyphen + heuristics'''
         wordsLower = (w.lower() for w in words)
-        prons = [self.lexicon[w] if w in self.lexicon else self.pyphen_pronounce(
+        prons = [self.lexicon[w] if w in self.lexicon else self.alt_pronounce(
             w) for w in wordsLower]
         return "| {0} |".format(' | '.join(prons)).split()
+
+    def alt_pronounce(self, word):
+        '''Alternative ways to pronounce the word. Adds simple digit to word conversion'''
+        prons = []
+        # Split words along hyphens
+        wordsSplit = splitHyphens(' '.join(word))
+        # Instead of one word, we may have many
+        for myword in wordsSplit:
+            if myword.isdigit():
+                words = NumToTextEng.convert(int(myword)).split()
+                pron = ' # '.join((self.pyphen_pronounce(w) for w in words))
+            else:
+                pron = self.pyphen_pronounce(myword)
+            prons.append(pron)
+        # Although the hyphenated word is now pronounced as multiple "words", 
+        # we treat again as a single word with multiple syllables
+        return ' # '.join(prons)
+            
 
     def pyphen_pronounce(self, word):
         ''' Uses pyphen as a back-off to generate a pseudo-hyphenated-pronounciation for words not in the lexicon. '''
