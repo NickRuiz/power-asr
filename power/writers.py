@@ -1,7 +1,7 @@
 from __future__ import division
 import abc
 import json
-from levenshtein import Levenshtein
+from power.levenshtein import Levenshtein
 
 
 def CreateWriter(output_type, filepath, hypfile, reffile):

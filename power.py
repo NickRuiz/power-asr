@@ -57,12 +57,12 @@ def main(argv):
 
         for i in range(len(args.format)):
             # Open files for writing POWER
-            filepath = "%s.power.%s" % (args.output, args.format[i])
+            filepath = "{0}.power.{1}".format(args.output, args.format[i])
             power_writers.append(writers.CreateWriter(
                 args.format[i], filepath, args.hypfile, args.reffile))
             if args.print_wer:
                 # Open files for writing WER
-                filepath = "%s.wer.%s" % (args.output, args.format[i])
+                filepath = "{0}.wer.{1}".format(args.output, args.format[i])
                 wer_writers.append(writers.CreateWriter(
                     args.format[i], filepath, args.hypfile, args.reffile))
 
@@ -72,7 +72,7 @@ def main(argv):
 
             if args.verbose:
                 print('===========')
-                print('Segment %d:' % linecount)
+                print('Segment {0:d}:'.format(linecount))
                 print('===========')
 
             refline = refline.strip()
@@ -83,8 +83,8 @@ def main(argv):
                 blank_lines = True
             else:
                 if args.verbose:
-                    print 'REF: "%s"' % refline
-                    print 'HYP: "%s"' % hypline
+                    print('REF: "{0}"'.format(refline))
+                    print('HYP: "{0}"'.format(hypline))
 
                 aligner = None
                 if args.word_align_weights:
@@ -105,11 +105,11 @@ def main(argv):
                             writer.write(linecount, aligner.wer_components, aligner.wer_alignment)
 
                 if args.verbose:
-                    print 'WER alignment:'
-                    print aligner.wer_alignment
-                    print 'WER:   ', aligner.wer
-                    print 'Errors:', aligner.wer_components
-                    print '==============='
+                    print('WER alignment:')
+                    print(aligner.wer_alignment)
+                    print('WER:   ', aligner.wer)
+                    print('Errors:', aligner.wer_components)
+                    print('===============')
 
                 aligner.align()
                 power_score_components += Counter(aligner.power_components)
@@ -126,18 +126,18 @@ def main(argv):
                         power_confusions[key] += cp[key]
 
                 if args.verbose:
-                    print 'Error Regions:'
+                    print('Error Regions:')
                     for i in aligner.error_indexes:
-                        print aligner.split_regions[i]
-                        print aligner.phonetic_alignments[i]
-                        print '-----'
-                    print '==============='
-                    print 'POWER alignment:'
-                    print aligner.power_alignment
-                    print 'POWER: ', aligner.power
-                    print 'Errors:', aligner.power_components
-                    print '==============='
-                    print ""
+                        print(aligner.split_regions[i])
+                        print(aligner.phonetic_alignments[i])
+                        print('-----')
+                    print('===============')
+                    print('POWER alignment:')
+                    print(aligner.power_alignment)
+                    print('POWER: ', aligner.power)
+                    print('Errors:', aligner.power_components)
+                    print('===============')
+                    print("")
 
             # Write POWER info
             for writer in power_writers:
@@ -156,44 +156,44 @@ def main(argv):
         writer.finalize()
 
     # Compare final WER to POWER
-    print "============="
-    print "Final scores:"
+    print("=============")
+    print("Final scores:")
     final_wer = (wer_score_components['S'] + wer_score_components['D'] +
                  wer_score_components['I']) / wer_score_components['L']
 
     final_power = (power_score_components['S'] + power_score_components['D'] +
                    power_score_components['I']) / power_score_components['L']
-    print "WER:  ", final_wer
-    print wer_score_components
-    print "POWER:", final_power
-    print power_score_components
+    print("WER:  ", final_wer)
+    print(wer_score_components)
+    print("POWER:", final_power)
+    print(power_score_components)
 
     diff_score = final_power - final_wer
     diff_components = copy.deepcopy(power_score_components)
     diff_components.subtract(wer_score_components)
 
-    print ""
-    print "Score component difference (POWER vs WER):"
-    print "Diff: ", diff_score
-    print diff_components
-    print "============="
+    print("")
+    print("Score component difference (POWER vs WER):")
+    print("Diff: ", diff_score)
+    print(diff_components)
+    print("=============")
 
     if args.compare:
-        writers.CompareWriter.write_comparison("%s.rsum" % args.output, args.hypfile, args.reffile, linecount,
+        writers.CompareWriter.write_comparison("{}.rsum" % args.output, args.hypfile, args.reffile, linecount,
                                                final_power, final_wer, power_score_components, wer_score_components, diff_score, diff_components)
     if args.show_confusions:
         if 'txt' in args.show_confusions:
             writers.ConfusionPairWriter.write(
-                "%s.power.conf" % args.output, args.hypfile, args.reffile, power_confusions)
+                "{}.power.conf".format(args.output), args.hypfile, args.reffile, power_confusions)
             if args.print_wer:
                 writers.ConfusionPairWriter.write(
-                    "%s.wer.conf" % args.output, args.hypfile, args.reffile, wer_confusions)
+                    "{}.wer.conf".format(args.output), args.hypfile, args.reffile, wer_confusions)
         if 'json' in args.show_confusions:
             writers.ConfusionPairWriter.write_json(
-                "%s.power.conf.json" % args.output, args.hypfile, args.reffile, power_confusions)
+                "{}.power.conf.json".format(args.output), args.hypfile, args.reffile, power_confusions)
             if args.print_wer:
                 writers.ConfusionPairWriter.write_json(
-                    "%s.wer.conf.json" % args.output, args.hypfile, args.reffile, wer_confusions)
+                    "{}.wer.conf.json".format(args.output), args.hypfile, args.reffile, wer_confusions)
 
 
 if __name__ == "__main__":
