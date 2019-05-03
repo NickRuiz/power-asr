@@ -13,7 +13,7 @@ class AlignLabels:
 
 
 class ExpandedAlignment:
-    '''Expands the Levenshtein alignment and lines up the aligned tokens.'''
+    '''Levenshtein-aligned reference and hypothesis, not just edit distance score.'''
 
     def __init__(self, s1, s2, align, s1_map=None, s2_map=None, lowercase=False):
         if not (len(s1) == len(s2) == len(align)):
@@ -89,7 +89,10 @@ class ExpandedAlignment:
 
     def split_error_regions(self, error_pattern='[SDI]*S[SDI]+|[SDI]+S[SDI]*'):
         '''
-        Splits the object into a list of multiple segments, annotating some as candidate error regions for correction.
+        Splits the object into a list of multiple segments.
+        Some segments are defined as error regions, containing at least one substitution error.
+        These error regions may candidates for realignment to alignment precision for downstream tasks.
+        (i.e. phoneme alignment or character alignment)
         '''
         split_regions = []
         error_indexes = []
@@ -117,7 +120,7 @@ class ExpandedAlignment:
 
     def append_alignment(self, expanded_alignment):
         '''
-        Concatenates a string alignment to the current.
+        Concatenates a string alignment to the current object.
         '''
         map_offset = self.length()
 
@@ -146,7 +149,7 @@ class ExpandedAlignment:
 
     def error_rate(self, cluster_on_ref=False):
         '''
-        Computes WER or POWER on a given alignment.
+        Computes WER or POWER.
         self.s1 is considered to be the reference and self.s2 is the hypothesis.
         '''
         score_components = {AlignLabels.correct: 0, AlignLabels.substitution: 0,
@@ -202,9 +205,9 @@ class ExpandedAlignment:
 
     def hyp_oriented_alignment(self, hyp_only=True):
         '''
-        TODO: Move to subclass. 
         Returns all alignment tokens. 
         If an S slot is an multiword alignment, duplicates AlignLabels.substitution by the capacity.
+        TODO: Move to subclass. 
         '''
         alignment = []
         ref_align_len, hyp_align_len = zip(*self.alignment_capacity())
@@ -228,7 +231,7 @@ class ExpandedAlignment:
 
 
 class Levenshtein:
-    def __init__(self, lowercase=False):
+    def __init__(self, lowercase=False, tokenMap=None):
         self.backMatrix = None
         self.distMatrix = None
         self.dist = -1
@@ -276,9 +279,6 @@ class Levenshtein:
 
             # Loop through columns, corresponding to characters in hyp
             for index1, char1 in enumerate(ref):
-                # print 'ref:', index1, char1
-                # print 'hyp:', index2, char2
-
                 if dist_penalty_set and char1 not in dist_penalty_set:
                     distPenaltyHyp += 1
                 else:
@@ -292,9 +292,6 @@ class Levenshtein:
                     index2+1, index1) + weights[AlignLabels.deletion]
 
                 if dist_penalty_set:
-                    # 					insPenalty += dist_penalty * weights[AlignLabels.insertion] * (1 - 1 / (distPenaltyRef + 1))
-                    # 					delPenalty += dist_penalty * weights[AlignLabels.deletion] * (1 - 1 / (distPenaltyHyp + 1))
-
                     insPenalty += (distPenaltyHyp * dist_penalty) * \
                         weights[AlignLabels.insertion]
                     delPenalty += (distPenaltyRef * dist_penalty) * \
@@ -323,12 +320,6 @@ class Levenshtein:
                         if not char2_sets:
                             char2_sets = no_membership_set
 
-# 						for k in range(len(exclusive_sets)):
-# 							if char1 in exclusive_sets[k]:
-# 								char1_set = k
-# 							if char2 in exclusive_sets[k]:
-# 								char2_set = k
-# 						if char1_set == char2_set:
                         if set.intersection(char1_sets, char2_sets):
                             opts.append(lev.backMatrix.getWeight(
                                 index2, index1) + weights[AlignLabels.substitution])  # S
@@ -340,7 +331,6 @@ class Levenshtein:
                 minDist = min(opts)
                 minIndices = [i for i in reversed(
                     range(len(opts))) if opts[i] == minDist]
-# 				minDist, minIndex = min((d, i) for i,d in enumerate(opts))
 
                 # Build the backtrack
                 alignLabels = []
@@ -382,8 +372,8 @@ class Levenshtein:
 
     def bestPathsGraph(self, minPos=None, maxPos=None):
         """
-        Takes all of the best Levenshtein alignment paths and puts them in a graph.
-        The graph is weighted by distance, which computes the distance between minPos and maxPos for all paths.
+        Takes all of the best Levenshtein alignment backtrack paths and puts them in a graph.
+        The graph is weighted by the distance between minPos and maxPos for all paths.
         """
         import networkx as nx
         if not minPos:
@@ -393,14 +383,11 @@ class Levenshtein:
 
         chart = deque()
         chart.appendleft(maxPos)
-        # print minPos, maxPos
 
         G = nx.Graph()
 
         while chart:
-            # print "Chart", chart
             (i, j) = chart.pop()
-# 			print self.s1[j-1], self.s2[i-1]
 
             for alignLabel in self.backMatrix.matrix[i][j].backTrackOptions:
                 child = self.backMatrix.matrix[i][j].getBackTrackOffset(
@@ -417,30 +404,10 @@ class Levenshtein:
                 if (i == prev_i and i in (minPos[0], maxPos[0])) or (j == prev_j and j in (minPos[1], maxPos[1])):
                     weight = 0
 
-                # print {'right':(i,j), 'left':(prev_i, prev_j), 'weight':weight, 'labels':(rlabel,hlabel,align)}
                 G.add_edge((i, j), (prev_i, prev_j), weight=weight,
                            labels=(rlabel, hlabel, align))
                 chart.appendleft((prev_i, prev_j))
-
         return G
-
-    def expandAlignCompact(self, minPos=None, maxPos=None):
-        """
-        Using the backtracking matrix, finds all of the paths with the minimum Levenshtein distance score and stores them in a graph.
-        Then, it returns the expanded alignment of the shortest path in the graph (which still has the same minimum Lev distance score.
-        """
-        import networkx as nx
-        minPos = (0, 0)
-        maxPos = (self.backMatrix.hyplen, self.backMatrix.reflen)
-
-        G = self.bestPathsGraph(minPos, maxPos)
-        path = nx.shortest_path(
-            G, source=minPos, target=maxPos, weight='weight')
-
-        # Expand the best path into the Levenshtein alignment.
-        s1_align, s2_align, align = [list(a) for a in zip(
-            *(G[u][v]['labels'] for (u, v) in zip(path[0:], path[1:])))]
-        return ExpandedAlignment(s1_align, s2_align, align, lowercase=self.lowercase)
 
     def editops(self):
         '''
@@ -476,14 +443,9 @@ class Levenshtein:
         s1_map = []
         s2_map = []
 
-        # print "Sequences"
-        # print len(self.s1), self.s1
-        # print len(self.s2), self.s2
-
         for op in self.edits:
             a = op[0]
             i, j = op[1]
-            # print "i=%d" % i, "j=%d" % j
 
             # Bugfix for empty hypotheses or reference (reference shouldn't happen)
             c1 = None
@@ -509,20 +471,33 @@ class Levenshtein:
 
             align.append(a)
 
-            # print s1
-            # print s2
-            # print "---"
-
         return ExpandedAlignment(s1, s2, align, s1_map, s2_map, lowercase=self.lowercase)
 
+    def expandAlignCompact(self, minPos=None, maxPos=None):
+        """
+        Using the backtracking matrix, finds all of the paths with the minimum Levenshtein distance score and stores them in a graph.
+        Then, it returns the expanded alignment of the shortest path in the graph (which still has the same minimum Lev distance score.
+        """
+        import networkx as nx
+        minPos = (0, 0)
+        maxPos = (self.backMatrix.hyplen, self.backMatrix.reflen)
+
+        G = self.bestPathsGraph(minPos, maxPos)
+        path = nx.shortest_path(
+            G, source=minPos, target=maxPos, weight='weight')
+
+        # Expand the best path into the Levenshtein alignment.
+        s1_align, s2_align, align = [list(a) for a in zip(
+            *(G[u][v]['labels'] for (u, v) in zip(path[0:], path[1:])))]
+        return ExpandedAlignment(s1_align, s2_align, align, lowercase=self.lowercase)
+
     @staticmethod
-    def WER(s, d, i, reflength):
+    def errorRate(s, d, i, reflength):
         return (s + d + i) / reflength
 
 
 class BackTrackMatrix:
     def __init__(self, reflen, hyplen, weights=Levenshtein.uniformWeights):
-
         self.reflen = reflen
         self.hyplen = hyplen
         self.weights = weights
@@ -544,11 +519,6 @@ class BackTrackMatrix:
             self.addBackTrack(0, j, AlignLabels.deletion,
                               j*weights[AlignLabels.deletion])
 
-# 	def __str__(self):
-# 		value = []
-# 		value.extend([x.__str__() for x in self.matrix])
-# 		return '\n'.join(value)
-
     def addBackTrack(self, i, j, alignLabels, weight=1.0):
         self.matrix[i][j] = BackTrackSlot(weight)
         self.matrix[i][j].addOptions(alignLabels)
@@ -558,11 +528,6 @@ class BackTrackMatrix:
 
     def getWeight(self, i, j):
         return self.matrix[i][j].weight
-
-# 	def backTrack(self, i, j, label=None):
-# 		if not label:
-# 			return self.matrix[i][j].values()[0]
-# 		return self.matrix[i][j][label]
 
 
 class BackTrackSlot:

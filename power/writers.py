@@ -80,7 +80,7 @@ class JsonWriter(WerWriter):
 		out_dict['id'] = segid
 		out_dict['errorTypes'] = score_components.copy()
 		out_dict['errorTypes']['refLength'] = out_dict['errorTypes'].pop('L')
-		out_dict['errRate'] = Levenshtein.WER(
+		out_dict['errRate'] = Levenshtein.errorRate(
 			score_components['S'], score_components['D'], score_components['I'], score_components['L'])
 		out_dict['alignments'] = []
 		for i in range(len(expanded_alignment.align)):
@@ -135,7 +135,7 @@ class SntWriter(WerWriter):
 		self.out_file.write('Insertions            =  {0:4.1%}   {1}   ({2})\n'.format(
 			score_components['I'] / score_components['L'], score_components['I'], score_components['L']))
 		self.out_file.write('\n')
-		self.out_file.write('Errors                =  {0:4.1%}   {1}   ({2})\n'.format(Levenshtein.WER(
+		self.out_file.write('Errors                =  {0:4.1%}   {1}   ({2})\n'.format(Levenshtein.errorRate(
 			score_components['S'], score_components['D'], score_components['I'], score_components['L']), score_components['S']+score_components['D']+score_components['I'], score_components['L']))
 		self.out_file.write('\n')
 		self.out_file.write('Ref. words            =         {0}   ({1})\n'.format(

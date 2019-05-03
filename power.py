@@ -118,11 +118,11 @@ def main(argv):
                     if args.print_wer:
                         # TODO: Refactor
                         cp = aligner.wer_alignment.confusion_pairs()
-                        for key in cp.iterkeys():
+                        for key in cp.keys():
                             wer_confusions[key] += cp[key]
 
                     cp = aligner.power_alignment.confusion_pairs()
-                    for key in cp.iterkeys():
+                    for key in cp.keys():
                         power_confusions[key] += cp[key]
 
                 if args.verbose:
@@ -163,9 +163,9 @@ def main(argv):
 
     final_power = (power_score_components['S'] + power_score_components['D'] +
                    power_score_components['I']) / power_score_components['L']
-    print("WER:  ", final_wer)
+    print("WER:   {0:1.3f}".format(final_wer))
     print(wer_score_components)
-    print("POWER:", final_power)
+    print("POWER: {0:1.3f}".format(final_power))
     print(power_score_components)
 
     diff_score = final_power - final_wer
@@ -174,7 +174,7 @@ def main(argv):
 
     print("")
     print("Score component difference (POWER vs WER):")
-    print("Diff: ", diff_score)
+    print("Diff: {0:1.3f}".format(diff_score))
     print(diff_components)
     print("=============")
 

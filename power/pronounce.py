@@ -33,7 +33,7 @@ class PronouncerLex(PronouncerBase):
         wordsLower = (w.lower() for w in words)
         prons = [self.lexicon[w] if w in self.lexicon else self.pyphen_pronounce(
             w) for w in wordsLower]
-        return "| {0} |".format(' | '.join(prons))
+        return "| {0} |".format(' | '.join(prons)).split()
 
     def pyphen_pronounce(self, word):
         ''' Uses pyphen as a back-off to generate a pseudo-hyphenated-pronounciation for words not in the lexicon. '''
@@ -51,6 +51,11 @@ class PronouncerLex(PronouncerBase):
                 j, p = pronidx[0]
                 sylpron.append(p)
                 m = j
+            if not sylpron:
+                # TODO: No dictionary entries found for this word. Error?
+                # Break syl into characters
+                sylpron = syl
+        
             # Remove duplicate adjacent phonemes
             sylpron = list(i for i, x in groupby(sylpron))
             pron.append(' '.join(sylpron))

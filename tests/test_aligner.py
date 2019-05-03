@@ -3,6 +3,10 @@ from power.aligner import PowerAligner, CharToWordAligner
 from power.pronounce import PronouncerType
 from power.levenshtein import Levenshtein, ExpandedAlignment
 
+def preproc(aligned_string):
+    aligned = [x if x != '_' else "" for x in aligned_string.split()]
+    words = [x for x in aligned if x]
+    return dict(words=words, string=' '.join(words), alignment=aligned)
 
 class test_aligner(unittest.TestCase):
 
@@ -72,7 +76,6 @@ class test_aligner(unittest.TestCase):
         print(aligner.power_alignment)
         print(expected_align)
 
-        self.maxDiff = None
         self.assertEqual(expected_align, aligner.power_alignment.align)
         self.assertEqual(expected_ref,   aligner.power_alignment.s1)
         self.assertEqual(expected_hyp,   aligner.power_alignment.s2)
@@ -82,6 +85,22 @@ class test_aligner(unittest.TestCase):
         self.assertEqual(actual, expected)
         actual = aligner.power_alignment.s2_string().split()
         self.assertEqual(actual, expected)
+
+    def test_power_ISS_to_DS(self):
+        # TODO: This test currently fails because of number normalization. Need to reintroduce the number normalizer into the codebase.
+        expected_ref =   preproc("A  50-year-old     business  man")
+        expected_hyp =   preproc("_  fifty year old  business  man")
+        expected_align = preproc("D  S               C         C")
+
+        aligner = PowerAligner(expected_ref['string'], expected_hyp['string'], lowercase=True, lexicon=self.lex)
+        aligner.align()
+
+        print("WER")
+        print(aligner.wer_alignment)
+        print ("POWER")
+        print(aligner.power_alignment)
+
+        self.assertEqual(expected_align['alignment'], aligner.power_alignment.align)
 
     def test_charToWordAlign_extra_hyp_syl_no_overlap(self):
         ref = """_     _   asked""".split()
