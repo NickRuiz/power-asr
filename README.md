@@ -13,9 +13,16 @@ Currently the repo has:
 2. The power aligner. See `power.py` for details.
 3. Alternative implementation of phoneme alignments with CMUDict (http://www.speech.cs.cmu.edu/cgi-bin/cmudict) and Hunspell for syllabification (e.g. https://pyphen.org/) instead of Festival
 
-## Example
+## Examples
+
+### lev.py - Standard Levenshtein alignments
 ```
-python power.py --ref examples/align-words/ref.txt --hyp examples/align-words/hyp.txt --output examples/align-words/results --lexicon lex/cmudict.rep.json
+python lev.py examples/align-words/ref.txt examples/align-words/hyp.txt
+```
+
+### power.py - Phonetically-oriented alignments
+```
+python power.py --ref examples/align-words/ref.txt --hyp examples/align-words/hyp.txt --output examples/align-words/results --lexicon lex/cmudict.rep.json --show-confusions txt
 
 Scores (#C #S #D #I) 7 8 0 1
 REF:  you     know  cadaver  dissection       is    the  traditional  way  of  learning  human  anatomy       
@@ -33,6 +40,8 @@ Ref. words            =         12   (12)
 Hyp. words            =         16   (12)
 Aligned words         =         15   (12)
 ```
+
+Use the `--show-confusions` command to view the substitution errors in your evaluation set.
 
 There are currently a few imperfections due to not using a proper grapheme to phoneme (g2p) transducer like in Festival. If you see any significant alignment issues, please open up an Issue.
 
