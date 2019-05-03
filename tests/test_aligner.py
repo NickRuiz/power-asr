@@ -160,26 +160,6 @@ class test_aligner(unittest.TestCase):
         self.assertEqual(word_align.s1, [x if x != "_" else "" for x in ref])
         self.assertEqual(word_align.s2, [x if x != "_" else "" for x in hyp])
 
-    # def test_align_map(self):
-    #     ref = ["They",  "said",  "Yes",  "We",  "",      "",   "asked", "them",  "how",  "happy",
-    #            "they",  "were",  "and",  "then",  "we",  "gave",  "them",  "an",  "envelope"]
-    #     ref_map = [0,       1,       2,      3,                     6,      7,       8,
-    #                9,        10,      11,      12,     13,      14,    15,      16,      17,    18]
-    #     align = ["C",     "C",     "C",    "C",   "I",     "I",   "S",    "C",     "C",
-    #              "C",      "C",     "C",     "C",    "C",     "C",   "C",     "C",     "S",   "S"]
-    #     hyp = ["they",  "said",  "yes",  "we",  "gave",  "we",  "ask",  "them",  "how",
-    #            "happy",  "they",  "were",  "and",  "then",  "",  "gave",  "them",  "on",  "low"]
-    #     hyp_map = [0,       1,       2,      3,     4,       5,     6,      7,       8,
-    #                9,        10,      11,      12,     13,             15,      16,      17,    18]
-
-    #     actual = ExpandedAlignment(ref, hyp, align, lowercase=True)
-    #     expected = ExpandedAlignment(
-    #         ref, hyp, align, ref_map, hyp_map, lowercase=True)
-
-    #     self.maxDiff = None
-    #     self.assertEqual(actual.s1_map, expected.s1_map)
-    #     self.assertEqual(actual.s2_map, expected.s2_map)
-
 
 if __name__ == "__main__":
     unittest.main()
