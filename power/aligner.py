@@ -143,7 +143,7 @@ class PowerAligner:
         # Perform word alignment
         lev = Levenshtein.align(self.ref, self.hyp, lowercase=self.lowercase, weights=word_align_weights)
         lev.editops()
-        self.wer_alignment = lev.expandAlignCompact()
+        self.wer_alignment = lev.expandAlign()
         self.wer, self.wer_components = self.wer_alignment.error_rate()
         
         # Used for POWER alignment
